@@ -1,42 +1,37 @@
 <script setup>
-import Card from './Card.vue';
 import CardList from './CardList.vue';
-import { ref, computed } from 'vue';
+import { onMounted } from 'vue';
+import TaskDetail from './TaskDetail.vue';
+import { useTaskStore } from '@/stores/tasks'
+import AddTaskModal from './AddTaskModal.vue';
 
-let datas = ref([
-  {
-    title: 'task1',
-    content: 'Wahahaha',
-    status: 'FLD',
-    owner: 'Liu',
-  }, {
-    title: 'task2',
-    content: 'Wahahaha',
-    status: 'PND',
-    owner: 'Wang',
-  },
-])
+const taskStore = useTaskStore()
+
+onMounted(() => {
+  taskStore.fetchTasks()
+});
 
 </script>
 
 <template>
-  <div flex min-h-screen bg-gray-100 overflow-hidden>
+  <div flex min-h-screen bg-base-100 overflow-hidden>
 
 
-    <header class="bg-white shadow-md z-50">
-      <div class="navbar bg-base-100 shadow-sm">
-        <a class="btn btn-ghost text-xl text-blue-700 h-15">Todo your work!</a>
+    <header class="fixed top-0 left-0 right-0 z-50 shadow-md">
+      <div class="navbar bg-gray-700 h-16"> <!-- 明确高度 -->
+        <a class="btn btn-ghost text-xl text-accent">Todo your work!</a>
       </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-      <aside>
-        <CardList :datas="datas">
+    <div class="flex pt-14 w-full h-[calc(100vh-4rem)]">
+      <aside class="min-w-[150px] max-w-[350px] w-1/3 w-max-150 overflow-y-auto border-r border-base-300">
+        <AddTaskModal></AddTaskModal>
+        <CardList :datas="taskStore.tasks">
         </CardList>
       </aside>
-      <div>
-        www
-      </div>
+      <main class="w-2/3 overflow-y-auto p-4">
+        <TaskDetail :selected-task="taskStore?.selectedTask"></TaskDetail>
+      </main>
     </div>
   </div>
 </template>
